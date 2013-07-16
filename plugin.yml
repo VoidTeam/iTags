@@ -1,0 +1,15 @@
+name: iTags
+author: jacklink01
+version: 1.5
+main: com.jacklinkproductions.iTags.Main
+
+commands:
+   itags:
+      description: Information about the plugin.
+      usage: /<command> info
+   ding:
+      description: Send a note to a player
+      usage: /<command> [player] [pitch]
+   trending:
+      description: Trending hashtags on this server.
+      usage: /<command>
