@@ -6,8 +6,7 @@ Tag players like twitter and notify them when you do so!
 
 Use this plugin to tag players quickly, and easily. Just do @playername to get their attention. You can even use shortened versions of a player's name and the plugin will automatically display their full name. The tags are a perfect way to get a player's attention in chat.
 
-Features
-==
+==Features==
 
 Tag players in chat
 Tag players in signs
