@@ -6,7 +6,8 @@ Tag players like twitter and notify them when you do so!
 
 Use this plugin to tag players quickly, and easily. Just do @playername to get their attention. You can even use shortened versions of a player's name and the plugin will automatically display their full name. The tags are a perfect way to get a player's attention in chat.
 
-==Features==
+Features
+-------------
 
 Tag players in chat
 Tag players in signs
@@ -17,6 +18,7 @@ BONUS: Enable colored #hashtags!
 
 
 Config
+-------------
 
 The config has many options that will allow you to customize this plugin to work exactly how you want it to. You can enable and disable every feature individually and can customize the colors, tag symbol, and sound effect in the config file.
 
@@ -30,7 +32,9 @@ Change sound effect for sign tags (Default: NOTE_BASS_GUITAR)
 /playertags info
 /playertags reload
 
+
 Permissions
+-------------
 
 playertags.*
 playertags.chattag
