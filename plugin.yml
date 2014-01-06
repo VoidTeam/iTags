@@ -1,6 +1,6 @@
 name: iTags
 author: jacklink01
-version: 1.5
+version: 1.6
 main: com.jacklinkproductions.iTags.Main
 
 commands:
@@ -8,8 +8,14 @@ commands:
       description: Information about the plugin.
       usage: /<command> info
    ding:
-      description: Send a note to a player
+      description: Send a note to a player.
       usage: /<command> [player] [pitch]
    trending:
       description: Trending hashtags on this server.
       usage: /<command>
+   tp:
+      description: Override Teleportation no matter what.
+      usage: /<command>
+   print:
+      description: Print directly into chat.
+      usage: /<command> [message]

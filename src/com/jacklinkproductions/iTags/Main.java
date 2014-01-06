@@ -18,6 +18,7 @@ public class Main extends JavaPlugin {
 	
     private static PluginDescriptionFile pdfFile;
 	private static Server bukkitServer;
+	public static String enableJacksStuff = "false";
     
     @Override
     public void onDisable() {
@@ -44,7 +45,12 @@ public class Main extends JavaPlugin {
         getCommand("itags").setExecutor(commandExecutor);
         getCommand("ding").setExecutor(commandExecutor);
         getCommand("trending").setExecutor(commandExecutor);
-
+        if (enableJacksStuff == "true")
+        {
+        	getCommand("tp").setExecutor(commandExecutor);
+        	getCommand("print").setExecutor(commandExecutor);
+        }
+        
         // Output info to console on load
         pdfFile = this.getDescription();
         getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
@@ -59,11 +65,14 @@ public class Main extends JavaPlugin {
         ChatListener.enableSignTags = getConfig().getString("enableSignTags");
         ChatListener.enableHashTags = getConfig().getString("enableHashTags");
         ChatListener.enableDotSlashCleaner = getConfig().getString("enableDotSlashCleaner");
+        ChatListener.enableLinkUnderliner = getConfig().getString("enableLinkUnderliner");
+        enableJacksStuff = getConfig().getString("enableJacksStuff");
         ChatListener.signNotifyType = getConfig().getString("signNotifyType");
         ChatListener.playerTag = getConfig().getString("playerTag");
         ChatListener.playerTagColor = getConfig().getString("playerTagColor");
         ChatListener.hashTagColor = getConfig().getString("hashTagColor");
         Commands.hashTagColor = getConfig().getString("hashTagColor");
+        ChatListener.linkColor = getConfig().getString("linkColor");
         ChatListener.useDisplayNameColors = getConfig().getString("useDisplayNameColors");
         ChatListener.chatSound = getConfig().getString("chatSound");
         ChatListener.signSound = getConfig().getString("signSound");

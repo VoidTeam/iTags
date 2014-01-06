@@ -3,7 +3,7 @@
 #	=====================================
 #
 #	Plugin by jacklink01
-# 	Like this plugin? Donate! http://voidteam.net :)
+# 	Like this plugin? Donate! http://voidteam.net/donate :)
 #
 #	Need a new config file? Just delete this one and a new one will be created.
 #
@@ -21,6 +21,7 @@ playerTag: '@'
 # You may use minecraft color codes! &a, &b, &c, &d, etc...
 playerTagColor: '&e'
 hashTagColor: '&b'
+linkColor: '&7'
 
 # Use the in-game color of the person's name instead of the above player tag color. (Also hide the tag symbol)
 useDisplayNameColors: false
@@ -40,7 +41,9 @@ censorHashTags: true
 
 # BONUS!
 # Very useful! Replace ./command with /command for a cleaner way of telling people how to use commands.
+# Also, a nice link underliner
 enableDotSlashCleaner: true
+enableLinkUnderliner: true
 
 
 

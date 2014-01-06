@@ -23,10 +23,12 @@ public class ChatListener implements Listener
 	public static String enableSignTags = "true";
 	public static String enableHashTags = "false";
 	public static String enableDotSlashCleaner = "true";
+	public static String enableLinkUnderliner = "true";
 	public static String signNotifyType = "mini";
 	public static String playerTag = "@";
 	public static String playerTagColor = "&e";
 	public static String hashTagColor = "&b";
+	public static String linkColor = "&7";
 	public static String censorHashTags = "true";
 	public static String useDisplayNameColors = "false";
 	public static String chatSound = "NOTE_PLING";
@@ -44,6 +46,7 @@ public class ChatListener implements Listener
 	{
 		String message = e.getMessage();
 		String tagmessage;
+		String linkmessage;
 		Player taggedplayer;
 		if (message.contains(playerTag) && enableChatTags == "true")
 		{
@@ -66,10 +69,6 @@ public class ChatListener implements Listener
 						if (punctuation.contains(last))
 						{
 							tagmessage = tagmessage.replace(last, "");
-							if (!last.equals("?"))
-							{
-								endmark = last;
-							}
 						}
 						
 						taggedplayer = Bukkit.getPlayer(tagmessage);
@@ -111,7 +110,7 @@ public class ChatListener implements Listener
 				for (int x = 0; x < words.length; x++)
 				{
 					String word = words[x].replaceAll("#", "");
-					if (words[x].startsWith("#") && word.matches("^[a-zA-Z0-9]*$") && !badwords.contains(word.toLowerCase())) //Ensure that the hashtag is alphanumeric
+					if (words[x].startsWith("#") && word.matches("^[a-zA-Z0-9!]*$") && !badwords.contains(word.toLowerCase())) //Ensure that the hashtag is alphanumeric or !, ?
 					{
 						tagmessage = words[x];
 						message = message.replaceAll(tagmessage, Main.parseColor(hashTagColor) + tagmessage + Main.parseColor("&r"));
@@ -124,7 +123,7 @@ public class ChatListener implements Listener
 				        	out.newLine();
 				        	out.close();
 				        }
-				        else if (!tagmessage.equals(lasttagmessage)) //Don't add duplicate hashtags to log 
+				        else if (!tagmessage.equals(lasttagmessage)) //Don't add duplicate hashtags within line to log 
 				        {
 				        	BufferedWriter out = new BufferedWriter(new FileWriter(file, true));
 				        	out.write(tagmessage);
@@ -142,9 +141,26 @@ public class ChatListener implements Listener
 		
 		if (message.contains("./") && enableDotSlashCleaner == "true")
 		{
-				message.replace("|", "");
-				message.replace("./", "/");
+			message = message.replaceAll("./", "/");
+			e.setMessage(message);
+		}
+		
+		if  (enableLinkUnderliner == "true" && (message.contains("http://") || message.contains("https://")))
+		{
+			if ((e.getPlayer().hasPermission("itags.links")) || (e.getPlayer().hasPermission("itags.*")) || (e.getPlayer().isOp()))
+			{
+				String[] words = message.split(" ");
+				for (int x = 0; x < words.length; x++)
+				{
+					if (words[x].contains(".") && (words[x].startsWith("http://") || words[x].startsWith("https://"))) //Ensure that the link is a link
+					{
+						linkmessage = words[x];
+						message = message.replace(linkmessage, Main.parseColor(linkColor) + Main.parseColor("&n") + linkmessage + Main.parseColor("&r"));
+					}
+				}
+
 				e.setMessage(message);
+			}
 		}
 	}
 	

@@ -38,7 +38,7 @@ public class Commands implements CommandExecutor {
         {
             if ((args.length == 0) || (args[0].equalsIgnoreCase("help")) || args[0].equalsIgnoreCase("version") || args[0].equalsIgnoreCase("info"))
             {
-              sender.sendMessage(ChatColor.GREEN + "[itags] Version 1.0");
+              sender.sendMessage(ChatColor.GREEN + "[iTags] Version 1.0");
               return true;
             }
             if (args[0].equalsIgnoreCase("reload"))
@@ -46,7 +46,7 @@ public class Commands implements CommandExecutor {
               if ((sender.hasPermission("itags.reload")) || (sender.hasPermission("itags.*")) || (sender.isOp()))
               {
                   plugin.reloadConfiguration();
-                  sender.sendMessage(ChatColor.GREEN + "[itags] Configuration reloaded!");
+                  sender.sendMessage(ChatColor.GREEN + "[iTags] Configuration reloaded!");
                   return true;
               }
               else
@@ -59,7 +59,7 @@ public class Commands implements CommandExecutor {
         
         if (cmd.getName().equalsIgnoreCase("ding"))
         {
-            if ((sender.hasPermission("itags.ding")) || (sender.hasPermission("itags.*")) || (sender.isOp()))
+            if ((sender.hasPermission("itags.ding")) || (sender.hasPermission("itags.*")) || (sender.isOp()) && (sender instanceof Player))
             {
                 Player fromPlayer = (Player) sender;
                 Player toPlayer = (Player) sender;
@@ -200,6 +200,96 @@ public class Commands implements CommandExecutor {
 			        }
 		        }
 	            return true;
+	        }
+	        else
+	        {
+	            sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
+	            return true;
+	        }
+	    }
+	    
+	    if (cmd.getName().equalsIgnoreCase("tp"))
+	    {
+	        if (((sender.hasPermission("itags.tpo")) || (sender.hasPermission("itags.*")) || (sender.isOp()) && (sender instanceof Player)))
+	        {
+	            Player player = (Player) sender;
+                if (args.length == 1)
+                {
+		        	player.performCommand("tpo " + args[0]);
+		            return true;
+                }
+                else if (args.length == 2)
+                {
+		        	player.performCommand("tpo " + args[0] + args[1]);
+		            return true;
+                }
+                else
+                {
+		        	player.performCommand("tpo");
+                	return true;
+                }
+	        }
+	        else if (sender instanceof Player)
+	        {
+	            Player player = (Player) sender;
+                if (args.length == 1)
+                {
+		        	player.performCommand("etp " + args[0]);
+		            return true;
+                }
+                else if (args.length == 2)
+                {
+		        	player.performCommand("etp " + args[0] + args[1]);
+		            return true;
+                }
+                else
+                {
+		        	player.performCommand("etp");
+                	return true;
+                }
+	        }
+	        else
+	        {
+                if (args.length == 1)
+                {
+                	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "etp " + args[0]);
+		            return true;
+                }
+                else if (args.length == 2)
+                {
+                	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "etp " + args[0] + args[1]);
+		            return true;
+                }
+                else
+                {
+                	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "etp");
+                	return false;
+                }
+	        }
+	    }
+	    
+	    if (cmd.getName().equalsIgnoreCase("print"))
+	    {
+	        if ((sender.hasPermission("itags.print")) || (sender.hasPermission("itags.*")) || (sender.isOp()))
+	        {
+	            if (args.length > 0)
+	            {
+					StringBuilder strBuilder = new StringBuilder();
+					for (int i=0; i<args.length; i++)
+					{
+					    strBuilder.append(args[i]);
+					    strBuilder.append(" ");
+					}
+					String message = Main.parseColor(strBuilder.toString());
+					
+			    	Bukkit.getServer().broadcastMessage(message);
+		            return true;
+	            }
+	            else
+	            {
+        			sender.sendMessage(ChatColor.RED + "Incorrect Syntax: /print <message>");
+        			return true;
+	            }
 	        }
 	        else
 	        {
