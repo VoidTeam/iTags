@@ -1,6 +1,6 @@
 name: iTags
 author: jacklink01
-version: 1.6
+version: 2.0
 main: com.jacklinkproductions.iTags.Main
 
 commands:
@@ -12,9 +12,6 @@ commands:
       usage: /<command> [player] [pitch]
    trending:
       description: Trending hashtags on this server.
-      usage: /<command>
-   tp:
-      description: Override Teleportation no matter what.
       usage: /<command>
    print:
       description: Print directly into chat.

@@ -208,7 +208,7 @@ public class Commands implements CommandExecutor {
 	        }
 	    }
 	    
-	    if (cmd.getName().equalsIgnoreCase("tp"))
+	   /* if (cmd.getName().equalsIgnoreCase("tp"))
 	    {
 	        if (((sender.hasPermission("itags.tpo")) || (sender.hasPermission("itags.*")) || (sender.isOp()) && (sender instanceof Player)))
 	        {
@@ -296,7 +296,7 @@ public class Commands implements CommandExecutor {
 	            sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
 	            return true;
 	        }
-	    }
+	    } */
     
     return false;
   }

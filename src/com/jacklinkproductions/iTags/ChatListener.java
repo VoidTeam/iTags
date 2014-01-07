@@ -48,6 +48,33 @@ public class ChatListener implements Listener
 		String tagmessage;
 		String linkmessage;
 		Player taggedplayer;
+		
+
+		
+		if (message.contains("./") && enableDotSlashCleaner == "true")
+		{
+			message = message.replaceAll("./", "/");
+			e.setMessage(message);
+		}
+		
+		if  (enableLinkUnderliner == "true" && (message.contains("http://") || message.contains("https://")))
+		{
+			if ((e.getPlayer().hasPermission("itags.links")) || (e.getPlayer().hasPermission("itags.*")) || (e.getPlayer().isOp()))
+			{
+				String[] words = message.split(" ");
+				for (int x = 0; x < words.length; x++)
+				{
+					if (words[x].contains(".") && (words[x].startsWith("http://") || words[x].startsWith("https://"))) //Ensure that the link is a link
+					{
+						linkmessage = words[x];
+						message = message.replace(linkmessage, Main.parseColor(linkColor) + Main.parseColor("&n") + linkmessage + Main.parseColor("&r"));
+					}
+				}
+
+				e.setMessage(message);
+			}
+		}
+		
 		if (message.contains(playerTag) && enableChatTags == "true")
 		{
 			if ((e.getPlayer().hasPermission("itags.playertag")) || (e.getPlayer().hasPermission("itags.*")) || (e.getPlayer().isOp()))
@@ -132,30 +159,6 @@ public class ChatListener implements Listener
 				        }
 				        
 						lasttagmessage = tagmessage;
-					}
-				}
-
-				e.setMessage(message);
-			}
-		}
-		
-		if (message.contains("./") && enableDotSlashCleaner == "true")
-		{
-			message = message.replaceAll("./", "/");
-			e.setMessage(message);
-		}
-		
-		if  (enableLinkUnderliner == "true" && (message.contains("http://") || message.contains("https://")))
-		{
-			if ((e.getPlayer().hasPermission("itags.links")) || (e.getPlayer().hasPermission("itags.*")) || (e.getPlayer().isOp()))
-			{
-				String[] words = message.split(" ");
-				for (int x = 0; x < words.length; x++)
-				{
-					if (words[x].contains(".") && (words[x].startsWith("http://") || words[x].startsWith("https://"))) //Ensure that the link is a link
-					{
-						linkmessage = words[x];
-						message = message.replace(linkmessage, Main.parseColor(linkColor) + Main.parseColor("&n") + linkmessage + Main.parseColor("&r"));
 					}
 				}
 

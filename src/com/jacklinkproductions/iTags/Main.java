@@ -14,12 +14,14 @@ import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
+import com.jacklinkproductions.iTags.Updater;
+
 public class Main extends JavaPlugin {
 	
     private static PluginDescriptionFile pdfFile;
 	private static Server bukkitServer;
-	public static String enableJacksStuff = "false";
-    
+	//public static String enableJacksStuff = "false";
+	
     @Override
     public void onDisable() {
         // Output info to console on disable
@@ -37,6 +39,21 @@ public class Main extends JavaPlugin {
         // Load configuration.
         reloadConfiguration();
         
+        // Check for old config
+        if ((getConfig().isSet("config-version") == false) || (getConfig().getInt("config-version") < 2))
+        {
+            File file = new File(this.getDataFolder(), "config.yml");
+            file.delete();
+            saveDefaultConfig();
+            getLogger().info( "Created a new config.yml for this version." );
+        }
+        
+        // Setup Updater system
+        if (getConfig().getString("update-notification") == "true")
+        {
+        	new Updater(this, 60549, this.getFile(), Updater.UpdateType.DEFAULT, false);
+        }
+        
         // Register our events
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
 
@@ -45,15 +62,15 @@ public class Main extends JavaPlugin {
         getCommand("itags").setExecutor(commandExecutor);
         getCommand("ding").setExecutor(commandExecutor);
         getCommand("trending").setExecutor(commandExecutor);
-        if (enableJacksStuff == "true")
-        {
-        	getCommand("tp").setExecutor(commandExecutor);
-        	getCommand("print").setExecutor(commandExecutor);
-        }
+        //if (enableJacksStuff == "true")
+        //{
+        //	getCommand("print").setExecutor(commandExecutor);
+        //	getCommand("tp").setExecutor(commandExecutor);
+        //}
         
         // Output info to console on load
         pdfFile = this.getDescription();
-        getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
+        getLogger().info( pdfFile.getName() + " v" + pdfFile.getVersion() + " is enabled!" );
     }
     
     public void reloadConfiguration() {
@@ -66,8 +83,9 @@ public class Main extends JavaPlugin {
         ChatListener.enableHashTags = getConfig().getString("enableHashTags");
         ChatListener.enableDotSlashCleaner = getConfig().getString("enableDotSlashCleaner");
         ChatListener.enableLinkUnderliner = getConfig().getString("enableLinkUnderliner");
-        enableJacksStuff = getConfig().getString("enableJacksStuff");
+        //enableJacksStuff = getConfig().getString("enableJacksStuff");
         ChatListener.signNotifyType = getConfig().getString("signNotifyType");
+        ChatListener.censorHashTags = getConfig().getString("censorHashTags");
         ChatListener.playerTag = getConfig().getString("playerTag");
         ChatListener.playerTagColor = getConfig().getString("playerTagColor");
         ChatListener.hashTagColor = getConfig().getString("hashTagColor");
@@ -121,5 +139,4 @@ public class Main extends JavaPlugin {
         
         return sortedMap;
     }
-
 }

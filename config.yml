@@ -45,6 +45,13 @@ censorHashTags: true
 enableDotSlashCleaner: true
 enableLinkUnderliner: true
 
+# Keep up to date! This plugin can notify you about updates and let you install them from in-game!
+update-notification: true
+
+
+# Don't touch this unless you wanna lose your config. :)
+config-version: 2
+
 
 
 #	Sounds Reference
