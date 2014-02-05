@@ -18,22 +18,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatListener implements Listener
-{
-	public static String enableChatTags = "true";
-	public static String enableSignTags = "true";
-	public static String enableHashTags = "false";
-	public static String enableDotSlashCleaner = "true";
-	public static String enableLinkUnderliner = "true";
-	public static String signNotifyType = "mini";
-	public static String playerTag = "@";
-	public static String playerTagColor = "&e";
-	public static String hashTagColor = "&b";
-	public static String linkColor = "&7";
-	public static String censorHashTags = "true";
-	public static String useDisplayNameColors = "false";
-	public static String chatSound = "NOTE_PLING";
-	public static String signSound = "NOTE_BASS_GUITAR";
-	
+{	
     private final Main plugin;
 
     ChatListener(Main plugin) {
@@ -49,15 +34,13 @@ public class ChatListener implements Listener
 		String linkmessage;
 		Player taggedplayer;
 		
-
-		
-		if (message.contains("./") && enableDotSlashCleaner == "true")
+		if (message.contains("./") && Main.enableDotSlashCleaner == "true")
 		{
 			message = message.replaceAll("./", "/");
 			e.setMessage(message);
 		}
 		
-		if  (enableLinkUnderliner == "true" && (message.contains("http://") || message.contains("https://")))
+		if  (Main.enableLinkUnderliner == "true" && (message.contains("http://") || message.contains("https://")))
 		{
 			if ((e.getPlayer().hasPermission("itags.links")) || (e.getPlayer().hasPermission("itags.*")) || (e.getPlayer().isOp()))
 			{
@@ -67,7 +50,7 @@ public class ChatListener implements Listener
 					if (words[x].contains(".") && (words[x].startsWith("http://") || words[x].startsWith("https://"))) //Ensure that the link is a link
 					{
 						linkmessage = words[x];
-						message = message.replace(linkmessage, Main.parseColor(linkColor) + Main.parseColor("&n") + linkmessage + Main.parseColor("&r"));
+						message = message.replace(linkmessage, Main.parseColor(Main.linkColor) + Main.parseColor("&n") + linkmessage + Main.parseColor("&r") + Main.parseColor(Main.chatColor));
 					}
 				}
 
@@ -75,17 +58,17 @@ public class ChatListener implements Listener
 			}
 		}
 		
-		if (message.contains(playerTag) && enableChatTags == "true")
+		if (message.contains(Main.playerTag) && Main.enableChatTags == "true")
 		{
 			if ((e.getPlayer().hasPermission("itags.playertag")) || (e.getPlayer().hasPermission("itags.*")) || (e.getPlayer().isOp()))
 			{
 				String[] words = message.split(" ");
 				for (int x = 0; x < words.length; x++)
 				{
-					if (words[x].startsWith(playerTag) && words[x].length() > 2)
+					if (words[x].startsWith(Main.playerTag) && words[x].length() > 2)
 					{
 						tagmessage = words[x];
-						tagmessage = tagmessage.replaceAll(playerTag, "");
+						tagmessage = tagmessage.replaceAll(Main.playerTag, "");
 
 						// Prepare for ending punctuation check
 						String last = tagmessage.substring(tagmessage.length() - 1);
@@ -102,15 +85,15 @@ public class ChatListener implements Listener
 						
 						if (taggedplayer != null)
 						{
-							if (useDisplayNameColors == "true")
+							if (Main.useDisplayNameColors == "true")
 							{
-								message = message.replaceAll(playerTag + tagmessage + endmark, taggedplayer.getDisplayName() + Main.parseColor("&r") + endmark);
+								message = message.replaceAll(Main.playerTag + tagmessage + endmark, taggedplayer.getDisplayName() + Main.parseColor("&r") + Main.parseColor(Main.chatColor) + endmark);
 							}
 							else
 							{
-								message = message.replaceAll(playerTag + tagmessage + endmark, Main.parseColor(playerTagColor) + playerTag + taggedplayer.getName() + Main.parseColor("&r") + endmark);
+								message = message.replaceAll(Main.playerTag + tagmessage + endmark, Main.parseColor(Main.playerTagColor) + Main.playerTag + taggedplayer.getName() + Main.parseColor("&r") + Main.parseColor(Main.chatColor) + endmark);
 							}
-							taggedplayer.getWorld().playSound(taggedplayer.getLocation(), Sound.valueOf(chatSound.toUpperCase()), 0.5F, 0.0F);
+							taggedplayer.getWorld().playSound(taggedplayer.getLocation(), Sound.valueOf(Main.chatSound.toUpperCase()), 0.5F, 0.0F);
 						}
 					}
 				}
@@ -119,7 +102,7 @@ public class ChatListener implements Listener
 			}
 		}
 		
-		if (message.contains("#") && enableHashTags == "true")
+		if (message.contains("#") && Main.enableHashTags == "true")
 		{
 			if ((e.getPlayer().hasPermission("itags.hashtag")) || (e.getPlayer().hasPermission("itags.*")) || (e.getPlayer().isOp()))
 			{
@@ -127,7 +110,7 @@ public class ChatListener implements Listener
 				String[] nobadwords = {"herobrine"};
 				List <String> badwords = Arrays.asList(nobadwords);
 				
-				if (censorHashTags == "true")
+				if (Main.censorHashTags == "true")
 				{
 					badwords = Arrays.asList(yesbadwords);
 				}
@@ -140,7 +123,7 @@ public class ChatListener implements Listener
 					if (words[x].startsWith("#") && word.matches("^[a-zA-Z0-9!]*$") && !badwords.contains(word.toLowerCase())) //Ensure that the hashtag is alphanumeric or !, ?
 					{
 						tagmessage = words[x];
-						message = message.replaceAll(tagmessage, Main.parseColor(hashTagColor) + tagmessage + Main.parseColor("&r"));
+						message = message.replaceAll(tagmessage, Main.parseColor(Main.hashTagColor) + tagmessage + Main.parseColor("&r") + Main.parseColor(Main.chatColor));
 
 				    	File file = new File(plugin.getDataFolder(), "hashtags.log");
 				        if (!file.exists()) {
@@ -174,26 +157,36 @@ public class ChatListener implements Listener
 		int lc = 0;
 		for (String l : lines)
 		{
-			if (l.contains(playerTag) && enableSignTags == "true")
+			if (l.contains(Main.playerTag) && Main.enableSignTags == "true")
 			{
 				if ((e.getPlayer().hasPermission("itags.signtag")) || (e.getPlayer().hasPermission("itags.*")) || (e.getPlayer().isOp()))
 				{
 					String[] words = l.split(" ");
 					for (int x = 0; x < words.length; x++)
 					{
-						if (words[x].startsWith(playerTag))
+						if (words[x].startsWith(Main.playerTag))
 						{
 							String tagmessage = words[x];
-							tagmessage = tagmessage.replaceAll(playerTag, "");
+							tagmessage = tagmessage.replaceAll(Main.playerTag, "");
 							Player taggedplayer = Bukkit.getPlayer(tagmessage);
 							if (taggedplayer != null)
 							{
-								String newMessage = l.replaceAll(playerTag + tagmessage, taggedplayer.getDisplayName());
+								String taggedname = taggedplayer.getName();
+								String playername = e.getPlayer().getName();
+								
+								if (Main.useDisplayNameColors == "true")
+								{
+									taggedname = taggedplayer.getDisplayName();
+									playername = e.getPlayer().getDisplayName();
+								}
+									
+								String newMessage = l.replaceAll(Main.playerTag + tagmessage, taggedname);
+								
 								e.setLine(lc, newMessage);
 								
-								if (signNotifyType.equals("full"))
+								if (Main.signNotifyType.equals("full"))
 								{
-					                  taggedplayer.sendMessage(ChatColor.GOLD + "[iTags] " + e.getPlayer().getDisplayName() + ChatColor.GOLD + " just tagged you in a sign!");
+					                  taggedplayer.sendMessage(ChatColor.GOLD + "[iTags] " + playername + ChatColor.GOLD + " just tagged you in a sign!");
 					                  taggedplayer.sendMessage(ChatColor.GOLD + "----------------------");
 					                  taggedplayer.sendMessage(ChatColor.GOLD + "-- " + ChatColor.RESET + e.getLine(0));
 					                  taggedplayer.sendMessage(ChatColor.GOLD + "-- " + ChatColor.RESET + e.getLine(1));
@@ -201,16 +194,16 @@ public class ChatListener implements Listener
 					                  taggedplayer.sendMessage(ChatColor.GOLD + "-- " + ChatColor.RESET + e.getLine(3));
 					                  taggedplayer.sendMessage(ChatColor.GOLD + "----------------------");
 								}
-								else if (signNotifyType.equals("mini"))
+								else if (Main.signNotifyType.equals("mini"))
 								{
-					                  taggedplayer.sendMessage(ChatColor.GOLD + "[iTags] " + e.getPlayer().getDisplayName() + ChatColor.GOLD + " just tagged you in a sign!");
+					                  taggedplayer.sendMessage(ChatColor.GOLD + "[iTags] " + playername + ChatColor.GOLD + " just tagged you in a sign!");
 								}
 								else
 								{
 					                  return;
 								}
 								
-								taggedplayer.getWorld().playSound(taggedplayer.getLocation(), Sound.valueOf(signSound.toUpperCase()), 0.5F, 1.0F);
+								taggedplayer.getWorld().playSound(taggedplayer.getLocation(), Sound.valueOf(Main.signSound.toUpperCase()), 0.5F, 1.0F);
 							}
 						}
 					}

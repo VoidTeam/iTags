@@ -22,6 +22,7 @@ playerTag: '@'
 playerTagColor: '&e'
 hashTagColor: '&b'
 linkColor: '&7'
+chatColor: '&f'
 
 # Use the in-game color of the person's name instead of the above player tag color. (Also hide the tag symbol)
 useDisplayNameColors: false
@@ -50,7 +51,7 @@ update-notification: true
 
 
 # Don't touch this unless you wanna lose your config. :)
-config-version: 2
+config-version: 3
 
 
 

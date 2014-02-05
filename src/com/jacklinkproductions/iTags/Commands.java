@@ -23,42 +23,90 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Commands implements CommandExecutor {
-	
-	public static String hashTagColor = "&b";
-	
+import com.jacklinkproductions.iTags.Updater;
+import com.jacklinkproductions.iTags.Updater.UpdateResult;
+
+public class Commands implements CommandExecutor
+{
     private final Main plugin;
 
     Commands(Main plugin) {
         this.plugin = plugin;
     }
-    
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+	{
         if (cmd.getName().equalsIgnoreCase("itags"))
         {
-            if ((args.length == 0) || (args[0].equalsIgnoreCase("help")) || args[0].equalsIgnoreCase("version") || args[0].equalsIgnoreCase("info"))
-            {
-              sender.sendMessage(ChatColor.GREEN + "[iTags] Version 1.0");
-              return true;
-            }
-            if (args[0].equalsIgnoreCase("reload"))
-            {
-              if ((sender.hasPermission("itags.reload")) || (sender.hasPermission("itags.*")) || (sender.isOp()))
-              {
-                  plugin.reloadConfiguration();
-                  sender.sendMessage(ChatColor.GREEN + "[iTags] Configuration reloaded!");
-                  return true;
-              }
-              else
-              {
-                  sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
-                  return true;
-              }
-            }
+			if (args.length == 1)
+			{
+	            if (args[0].equalsIgnoreCase("reload"))
+	            {
+	              if ((sender.hasPermission("itags.reload")) || (sender.hasPermission("itags.*")) || (sender.isOp()))
+	              {
+	                  plugin.reloadConfiguration();
+	                  sender.sendMessage(ChatColor.GREEN + "[iTags] Configuration reloaded!");
+	              }
+	              else
+	              {
+	                  sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
+	              }
+	            }
+	            else if (args[0].equalsIgnoreCase("update"))
+				{
+					if (sender.hasPermission("itags.update") || sender.isOp()) 
+					{
+				        if (plugin.getConfig().getString("update-notification") == "false")
+				        {
+				            sender.sendMessage(ChatColor.RED + "This command is disabled in the config!");
+				        }
+				        
+			            if (!plugin.updateAvailable) {
+			                sender.sendMessage(ChatColor.YELLOW + "No updates are available!");
+			            }
+			            
+			            Updater updater = new Updater(plugin, Main.updaterID, plugin.getFile(), Updater.UpdateType.DEFAULT, true);
+			            if (updater.getResult() == UpdateResult.NO_UPDATE)
+			                sender.sendMessage(ChatColor.YELLOW + "No updates are available!");
+			            else
+			            {
+			                sender.sendMessage(ChatColor.YELLOW + "Updating... Check console for details.");
+			            }
+					}
+					else
+					{
+						sender.sendMessage(ChatColor.RED + "You do not have permissions to perform this command");
+					}
+				}
+	            else
+	            {
+					sender.sendMessage(ChatColor.YELLOW + "-- " + Main.pdfFile.getName() + " v" + Main.pdfFile.getVersion() + " --");
+					sender.sendMessage(ChatColor.RED + "/itags reload - Reload Config");
+					sender.sendMessage(ChatColor.RED + "/itags update - Updates to latest version");
+					sender.sendMessage(ChatColor.RED + "/ding [name] [pitch] - Get attention of players");
+					sender.sendMessage(ChatColor.RED + "/trending - See trending hashtags");
+	            }
+			}
+			else
+			{
+				sender.sendMessage(ChatColor.YELLOW + "-- " + Main.pdfFile.getName() + " v" + Main.pdfFile.getVersion() + " --");
+				sender.sendMessage(ChatColor.RED + "/itags reload - Reload Config");
+				sender.sendMessage(ChatColor.RED + "/itags update - Updates to latest version");
+				sender.sendMessage(ChatColor.RED + "/ding [name] [pitch] - Get attention of players");
+				sender.sendMessage(ChatColor.RED + "/trending - See trending hashtags");
+			}
+			
+			return true;
         }
         
         if (cmd.getName().equalsIgnoreCase("ding"))
         {
+        	if (!(sender instanceof Player))
+        	{
+				sender.sendMessage(ChatColor.RED + "This command cannot be used from console.");
+        		return false;
+        	}
+        	        	
             if ((sender.hasPermission("itags.ding")) || (sender.hasPermission("itags.*")) || (sender.isOp()) && (sender instanceof Player))
             {
                 Player fromPlayer = (Player) sender;
@@ -70,7 +118,6 @@ public class Commands implements CommandExecutor {
                 	if (Bukkit.getPlayer(args[0]) == null) //Player doesn't exist
                 	{
             			fromPlayer.sendMessage(ChatColor.RED + "Player not found!");
-            			return true;
                 	}
                 	else
                 	{
@@ -85,7 +132,6 @@ public class Commands implements CommandExecutor {
 	        		toPlayer.getWorld().playSound(toPlayer.getLocation(), Sound.NOTE_PLING, 0.6F, note);
 	    			toPlayer.sendMessage(ChatColor.GOLD + "Hey you! " + fromPlayer.getDisplayName() + ChatColor.GOLD + " wants your attention!");
 	    			fromPlayer.sendMessage(ChatColor.GOLD + "A ding has been sent to " + toPlayer.getDisplayName() + ChatColor.GOLD + "!");
-	    			return true;
 	            }
                 else if (args.length == 1) // /ding X
                 {
@@ -98,14 +144,12 @@ public class Commands implements CommandExecutor {
     	            	
     	        		toPlayer.getWorld().playSound(toPlayer.getLocation(), Sound.NOTE_PLING, 0.6F, note);
     	    			toPlayer.sendMessage(ChatColor.GOLD + "Ding!");
-    	    			return true;
                 	}
 	    			else //If it's not a number then arg[0] is a player name
 	    			{
 	                	if (Bukkit.getPlayer(args[0]) == null) //Player doesn't exist
 	                	{
 	            			fromPlayer.sendMessage(ChatColor.RED + "Player not found!");
-	            			return true;
 	                	}
 	                	else
 	                	{
@@ -118,7 +162,6 @@ public class Commands implements CommandExecutor {
     	        		toPlayer.getWorld().playSound(toPlayer.getLocation(), Sound.NOTE_PLING, 0.6F, note);
     	    			toPlayer.sendMessage(ChatColor.GOLD + "Hey you! " + fromPlayer.getDisplayName() + ChatColor.GOLD + " wants your attention!");
     	    			fromPlayer.sendMessage(ChatColor.GOLD + "A ding has been sent to " + toPlayer.getDisplayName() + ChatColor.GOLD + "!");
-    	    			return true;
 	    			}
                 }
             	else if (args.length == 0) // /ding
@@ -128,22 +171,21 @@ public class Commands implements CommandExecutor {
 	            	
 	        		toPlayer.getWorld().playSound(toPlayer.getLocation(), Sound.NOTE_PLING, 0.6F, note);
 	    			fromPlayer.sendMessage(ChatColor.GOLD + "Ding!");
-	    			return true;
                 }
             	else
             	{
-        			fromPlayer.sendMessage(ChatColor.RED + "Incorrect Syntax: /ding [name] [note]");
-        			return true;
+        			fromPlayer.sendMessage(ChatColor.RED + "Incorrect Syntax: /ding [name] [pitch]");
             	}
             }
             else
             {
                 sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
-                return true;
             }
+			
+			return true;
         }
-    
-	    if (cmd.getName().equalsIgnoreCase("trending"))
+        
+        if (cmd.getName().equalsIgnoreCase("trending"))
 	    {
 	        if ((sender.hasPermission("itags.trending")) || (sender.hasPermission("itags.*")) || (sender.isOp()))
 	        {
@@ -195,109 +237,19 @@ public class Commands implements CommandExecutor {
 			            	break;
 			            }
 
-			            sender.sendMessage(ChatColor.GRAY + "" + count + ". " + Main.parseColor(hashTagColor) + hashtag + ChatColor.WHITE + " (" + occurances + ")");
+			            sender.sendMessage(ChatColor.GRAY + "" + count + ". " + Main.parseColor(Main.hashTagColor) + hashtag + ChatColor.WHITE + " (" + occurances + ")");
 			            count++;
 			        }
 		        }
-	            return true;
 	        }
 	        else
 	        {
 	            sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
-	            return true;
 	        }
+			
+			return true;
 	    }
-	    
-	   /* if (cmd.getName().equalsIgnoreCase("tp"))
-	    {
-	        if (((sender.hasPermission("itags.tpo")) || (sender.hasPermission("itags.*")) || (sender.isOp()) && (sender instanceof Player)))
-	        {
-	            Player player = (Player) sender;
-                if (args.length == 1)
-                {
-		        	player.performCommand("tpo " + args[0]);
-		            return true;
-                }
-                else if (args.length == 2)
-                {
-		        	player.performCommand("tpo " + args[0] + args[1]);
-		            return true;
-                }
-                else
-                {
-		        	player.performCommand("tpo");
-                	return true;
-                }
-	        }
-	        else if (sender instanceof Player)
-	        {
-	            Player player = (Player) sender;
-                if (args.length == 1)
-                {
-		        	player.performCommand("etp " + args[0]);
-		            return true;
-                }
-                else if (args.length == 2)
-                {
-		        	player.performCommand("etp " + args[0] + args[1]);
-		            return true;
-                }
-                else
-                {
-		        	player.performCommand("etp");
-                	return true;
-                }
-	        }
-	        else
-	        {
-                if (args.length == 1)
-                {
-                	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "etp " + args[0]);
-		            return true;
-                }
-                else if (args.length == 2)
-                {
-                	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "etp " + args[0] + args[1]);
-		            return true;
-                }
-                else
-                {
-                	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "etp");
-                	return false;
-                }
-	        }
-	    }
-	    
-	    if (cmd.getName().equalsIgnoreCase("print"))
-	    {
-	        if ((sender.hasPermission("itags.print")) || (sender.hasPermission("itags.*")) || (sender.isOp()))
-	        {
-	            if (args.length > 0)
-	            {
-					StringBuilder strBuilder = new StringBuilder();
-					for (int i=0; i<args.length; i++)
-					{
-					    strBuilder.append(args[i]);
-					    strBuilder.append(" ");
-					}
-					String message = Main.parseColor(strBuilder.toString());
-					
-			    	Bukkit.getServer().broadcastMessage(message);
-		            return true;
-	            }
-	            else
-	            {
-        			sender.sendMessage(ChatColor.RED + "Incorrect Syntax: /print <message>");
-        			return true;
-	            }
-	        }
-	        else
-	        {
-	            sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
-	            return true;
-	        }
-	    } */
-    
-    return false;
-  }
+        
+		return false;
+    }
 }
