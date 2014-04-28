@@ -50,7 +50,7 @@ public class ChatListener implements Listener
 					if (words[x].contains(".") && (words[x].startsWith("http://") || words[x].startsWith("https://"))) //Ensure that the link is a link
 					{
 						linkmessage = words[x];
-						message = message.replace(linkmessage, Main.parseColor(Main.linkColor) + Main.parseColor("&n") + linkmessage + Main.parseColor("&r") + Main.parseColor(Main.chatColor));
+						message = message.replace(linkmessage, Main.parseColor(Main.linkColor) + Main.parseColor("&n") + linkmessage + " " + Main.parseColor("&r") + Main.parseColor(Main.chatColor));
 					}
 				}
 
